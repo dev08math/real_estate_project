@@ -8,19 +8,20 @@ import java.io.InputStream;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class AssetLoader {
+public class AssetProvider {
 
-    private static String assetsPath = AssetLoader.class.getResource("....").toString() + "assets";
+    private static String assetsPath = "classpath:assets/";
 
     private File default_dp;
     private InputStream stream;
     private MultipartFile dp_file; 
 
-    public AssetLoader() throws IOException{
-        default_dp = new File(assetsPath + "default_dp.png");
+    public AssetProvider() throws IOException{
+        default_dp = ResourceUtils.getFile(assetsPath + "default_dp.png");
         try {
             stream =  new FileInputStream(default_dp);
         } catch (Exception  ex) {
