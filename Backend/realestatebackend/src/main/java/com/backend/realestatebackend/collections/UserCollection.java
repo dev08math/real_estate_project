@@ -1,14 +1,11 @@
-package com.backend.realestatebackend.collection;
+package com.backend.realestatebackend.collections;
 
-import java.util.Date;
+// import java.util.Date;
 
-import org.springframework.data.annotation.CreatedDate;
+// import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -27,8 +24,8 @@ public class UserCollection {
     @Id
     private String id;
 
-    @CreatedDate
-    private Date joiningDate;
+    // @CreatedDate
+    // private Date joiningDate;
 
     @Builder.Default
     private  boolean enabled = false;
@@ -36,13 +33,13 @@ public class UserCollection {
     @DocumentReference(lazy = true)
     private PropertiesCollection myproperties;
 
-    @Transient
-    private MultipartFile dp;
+    // @Transient
+    // private MultipartFile dp;
     
     private String name;
     private Long phoneNumber;
     private String email;
     private String password;
-    
-
+    private String dp;
+    private String joiningDate;
 }

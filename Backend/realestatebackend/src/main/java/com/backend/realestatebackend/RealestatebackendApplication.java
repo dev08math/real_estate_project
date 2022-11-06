@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.backend.realestatebackend.collection.PropertiesCollection;
-import com.backend.realestatebackend.collection.UserCollection;
+import com.backend.realestatebackend.dao.PropertiesRepository;
+import com.backend.realestatebackend.dao.UserRepository;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackageClasses = {PropertiesCollection.class, UserCollection.class})
+@EnableMongoRepositories(basePackageClasses = {PropertiesRepository.class, UserRepository.class})
 @EnableMongoAuditing
 public class RealestatebackendApplication {
 

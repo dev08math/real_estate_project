@@ -1,4 +1,4 @@
-package com.backend.realestatebackend.collection;
+package com.backend.realestatebackend.collections;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
