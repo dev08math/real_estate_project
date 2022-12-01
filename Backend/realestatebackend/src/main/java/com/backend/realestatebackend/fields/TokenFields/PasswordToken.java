@@ -1,4 +1,4 @@
-package com.backend.realestatebackend.fields;
+package com.backend.realestatebackend.fields.TokenFields;
 
 import java.util.Calendar;
 import java.util.Date;
