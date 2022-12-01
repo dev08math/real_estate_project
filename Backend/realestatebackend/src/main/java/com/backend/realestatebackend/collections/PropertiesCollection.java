@@ -8,7 +8,11 @@ import org.springframework.data.annotation.Id;
 // import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.backend.realestatebackend.fields.Address;
+import com.backend.realestatebackend.fields.PropertyFields.Address;
+import com.backend.realestatebackend.fields.PropertyFields.AmenitiesDetails;
+import com.backend.realestatebackend.fields.PropertyFields.LocalityDetails;
+import com.backend.realestatebackend.fields.PropertyFields.MainDetails;
+import com.backend.realestatebackend.fields.PropertyFields.RentalDetails;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -33,20 +37,21 @@ public class PropertiesCollection {
     // private List<MultipartFile> photos;
     
     @Builder.Default
-    private  boolean visibility = true;
+    private  boolean activate = false;
 
     private String ownerId;
-    private String title;
+    private String title; 
 
-    private String type;
-    private String rooms;
-    private String price;
-    private boolean purchaseable;
+    private MainDetails mainDetails;
 
-    private List<String> loc;
+    private LocalityDetails localityDetails;
+
+    private RentalDetails rentalDetails;
+
+    private AmenitiesDetails amenitiesDetails;
+
     private Address address;
 
-    private List<String> amenities;
     private List<String> photos;
     private boolean hasPhotos;
 

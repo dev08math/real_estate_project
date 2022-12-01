@@ -3,8 +3,8 @@ package com.backend.realestatebackend.collections;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.backend.realestatebackend.fields.PasswordToken;
-import com.backend.realestatebackend.fields.VerificationToken;
+import com.backend.realestatebackend.fields.TokenFields.PasswordToken;
+import com.backend.realestatebackend.fields.TokenFields.VerificationToken;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
