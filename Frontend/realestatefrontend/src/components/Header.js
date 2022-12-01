@@ -123,7 +123,7 @@ function Header() {
 
           <Box
             justifyContent="flex-end"
-            alignItems="center"
+          
             sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
           >
             <Stack direction="row" spacing={2}>

@@ -1,6 +1,6 @@
-import { AppBar, Button, Grid, Typography } from "@mui/material";
-import { React, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { AppBar, Button, Grid, ModalRoot, Typography } from "@mui/material";
+import { React, useRef, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import { Icon } from "leaflet";
 
 import homePng from "../assets/Mapicons/house.png";
@@ -26,8 +26,19 @@ export default function Listings() {
 
   const [lat, setLat] = useState(51.505);
   const [long, setLong] = useState(-0.09);
-  console.log(tempListings);
   const [allListings, setListings] = useState(tempListings);
+  const [marker, setMarker] = useState({'lat': 51.50, 'lng': -0.1});
+  const [zoomLevel, setzoomLevel] = useState(5);
+
+  const MapContent = () => {  
+    const map = useMapEvents({
+      click: (e) => {
+        setMarker(e.latlng);
+      }
+    });
+    return null;
+}
+
 
   return (
     <Grid container>
@@ -66,7 +77,7 @@ export default function Listings() {
         <AppBar position="sticky">
           <div style={{ height: "100vh" }}>
             <MapContainer
-              center={[51.505, -0.09]}
+              center={[marker.lat,  marker.lng]}
               zoom={10}
               scrollWheelZoom={true}
             >
@@ -75,7 +86,7 @@ export default function Listings() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
 
-              {tempListings.map((listing) => {
+              {/* {tempListings.map((listing) => {
                 function displayIcon() {
                   if (listing.listing_type === "House") {
                     return homeIcon;
@@ -113,14 +124,32 @@ export default function Listings() {
                     </Popup>
                   </Marker>
                 );
-              })}
+              })} */}
 
-              {/* <Marker  icon={homeIcon} position={[lat, long]}>
+              <Marker  icon={homeIcon} position={[lat, long]}>
                 <Popup>
                   <Typography variant="h2">Hey there</Typography>
                   <Typography variant="body1">This is body1</Typography>
                 </Popup>
-              </Marker> */}
+              </Marker>
+              <MapContent/>
+            {/* {markers.map((marker, i) => (
+                    <Marker key={`marker-${i}`} position={marker}>
+                      <Popup>
+                        <span>
+                          A pretty CSS3 popup. <br /> Easily customizable.
+                        </span>
+                      </Popup>
+                    </Marker>
+                  ))}
+            </MapContainer> */}
+            <Marker position={[marker.lat, marker.lng]}>
+              <Popup>
+                <span>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </span>
+              </Popup>
+            </Marker>
             </MapContainer>
           </div>
         </AppBar>
