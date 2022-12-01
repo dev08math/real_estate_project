@@ -22,7 +22,7 @@ import com.backend.realestatebackend.service.UserService;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
+
     Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -31,32 +31,35 @@ public class UserController {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    private static String generateUrl(HttpServletRequest request){
-        return "http://" + 
-        request.getServerName() + 
-        ":" + 
-        request.getServerPort() + 
-        request.getContextPath();
+    private static String generateUrl(HttpServletRequest request) {
+        return "http://" +
+                request.getServerName() +
+                ":" +
+                request.getServerPort() +
+                request.getContextPath();
     }
 
     @PostMapping("/register")
-    public UserCollection  generateNewUser(@RequestBody UserModel userModel, final HttpServletRequest request){
+    public UserCollection generateNewUser(@RequestBody UserModel userModel, final HttpServletRequest request) {
         UserCollection user = userService.registerNewUser(userModel);
         publisher.publishEvent(new RegistrationEvent(user, generateUrl(request)));
         return user;
     }
 
     @GetMapping("/verifyregistration")
-    public String verifyRegistration(@RequestParam("token") String token){
+    public String verifyRegistration(@RequestParam("token") String token) {
         String result = userService.validateVerficationToken(token);
-        if(result.equalsIgnoreCase("valid")) return "Token Validated";
+        if (result.equalsIgnoreCase("valid"))
+            return "Token Validated";
         return result;
     };
 
     @GetMapping("/resendverificationtoken")
-    public String  resendVerificationToken(@RequestParam("token") String token, final HttpServletRequest request){
+    public String resendVerificationToken(@RequestParam("token") String token, final HttpServletRequest request) {
         TokenCollection tokenCollection = userService.generateNewToken(token);
-        if(tokenCollection == null) return "Invalid Token";
-        return generateUrl(request) + "user/verifyregistration?token=" + tokenCollection.getVerificationToken().getToken();
+        if (tokenCollection == null)
+            return "Invalid Token";
+        return generateUrl(request) + "user/verifyregistration?token="
+                + tokenCollection.getVerificationToken().getToken();
     }
 }
