@@ -25,6 +25,9 @@ public class UserCollection {
     @Builder.Default
     private  boolean enabled = false;
 
+    @Builder.Default
+    private  boolean visibility = false;
+
     // @Transient
     // private MultipartFile dp;
 
