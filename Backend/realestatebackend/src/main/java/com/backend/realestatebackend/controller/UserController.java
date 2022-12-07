@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/verifyregistration")
+    @PostMapping("/verifyregistration")
     public String verifyRegistration(@RequestParam("token") String token) {
         String result = userService.validateVerficationToken(token);
         if (result.equalsIgnoreCase("valid"))
@@ -54,7 +54,7 @@ public class UserController {
         return result;
     };
 
-    @GetMapping("/resendverificationtoken")
+    @PostMapping("/resendverificationtoken")
     public String resendVerificationToken(@RequestParam("token") String token, final HttpServletRequest request) {
         TokenCollection tokenCollection = userService.generateNewToken(token);
         if (tokenCollection == null)

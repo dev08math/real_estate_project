@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userModel.getPassword());
         user.setPhoneNumber(userModel.getPhoneNumber());
 
-        user.setDp(cloudinaryService.uploadToCloudinary(assetProvider.getDpFile(), userModel.getName(), "default_dp"));
+        user.setDp(cloudinaryService.uploadToCloudinary(assetProvider.getDpFile(), userModel.getName(), "profile", "default_dp"));
 
         Date currentDate = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");

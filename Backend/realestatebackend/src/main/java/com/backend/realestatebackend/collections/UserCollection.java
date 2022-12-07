@@ -23,10 +23,10 @@ public class UserCollection {
     private String userId;
 
     @Builder.Default
-    private  boolean enabled = false;
+    private  Boolean enabled = false;
 
     @Builder.Default
-    private  boolean visibility = false;
+    private  Boolean visibility = false;
 
     // @Transient
     // private MultipartFile dp;
