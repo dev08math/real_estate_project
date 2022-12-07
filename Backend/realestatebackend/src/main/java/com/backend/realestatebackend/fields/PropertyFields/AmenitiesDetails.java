@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class AmenitiesDetails {
     private Integer bathrooms;
     private Integer balcony;
-    private boolean security;
-    private boolean Gym;
+    private Boolean security;
+    private Boolean gym;
     private List<Integer> amenities;
 }

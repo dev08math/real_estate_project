@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 public class MainDetailsModel {
     private String type;
     private String roomType;
-    private String floor;
-    private String totalFloors;
+    private Integer floor;
+    private Integer totalFloors;
     private String propertyAge;
-    private String area;
+    private Float area;
     private String description;
 }

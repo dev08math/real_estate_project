@@ -12,6 +12,6 @@ public class RentalDetailsModel {
     private String availableFrom;
     private String furnishing;
     private String preferrence;
-    private boolean negotiable;
-    private boolean parking;
+    private Boolean negotiable;
+    private Boolean parking;
 }

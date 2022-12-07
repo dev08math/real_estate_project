@@ -21,11 +21,11 @@ public class CloudinaryService {
             "api_secret", "MW72OXs3Lv_kIqYYAN3jATp7KqU"));
     }
     // ObjectUtils.asMap("public_id", "default_dp")
-    public String uploadToCloudinary(MultipartFile file, String userName, String fileName){
+    public String uploadToCloudinary(MultipartFile file, String userName, String folderName, String fileName){
         String result = "error";
         try {
             result = (cloudinaryClient.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                "public_id", "RealEstateApp/Users/" + userName + "/" + fileName, 
+                "public_id", "RealEstateApp/Users/" + userName + "/" + folderName + "/" + fileName, 
                 "overwrite", true,
                 // "notification_url", "https://mysite.com/notify_endpoint",
                 "resource_type", "auto"         

@@ -11,7 +11,7 @@ public class RentalDetails {
     private Integer deposit;
     private String availableFrom;
     private String furnishing;
-    private String preferrence;
-    private boolean negotiable;
-    private boolean parking;
+    private String preference;
+    private Boolean negotiable;
+    private Boolean parking;
 }
