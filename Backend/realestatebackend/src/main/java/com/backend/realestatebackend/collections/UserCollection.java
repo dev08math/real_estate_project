@@ -1,8 +1,11 @@
 package com.backend.realestatebackend.collections;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -30,6 +33,10 @@ public class UserCollection {
 
     // @Transient
     // private MultipartFile dp;
+
+    @DBRef
+    @Builder.Default
+    private Set <Roles> roles = new HashSet<>();
 
     private List<String> myproperties;
     private List<String> bookmarks;

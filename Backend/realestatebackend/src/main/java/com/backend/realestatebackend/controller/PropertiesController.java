@@ -16,7 +16,7 @@ import com.backend.realestatebackend.models.PropertyModel;
 import com.backend.realestatebackend.service.PropertiesService;
 
 @RestController
-@RequestMapping("/properties")
+@RequestMapping("/api/properties")
 public class PropertiesController {
 
     @Autowired

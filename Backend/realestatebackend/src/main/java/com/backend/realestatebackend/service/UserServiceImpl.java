@@ -1,8 +1,12 @@
 package com.backend.realestatebackend.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -13,12 +17,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.backend.realestatebackend.collections.Roles;
 import com.backend.realestatebackend.collections.TokenCollection;
 import com.backend.realestatebackend.collections.UserCollection;
 import com.backend.realestatebackend.fields.TokenFields.VerificationToken;
-import com.backend.realestatebackend.models.UserModel;
+import com.backend.realestatebackend.models.ERole;
+import com.backend.realestatebackend.models.UserRegisterModel;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,16 +41,38 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MongoTemplate mt;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public UserCollection registerNewUser(UserModel userModel) {
+    public UserCollection registerNewUser(UserRegisterModel userModel) {
         UserCollection user = new UserCollection();
 
         user.setName(userModel.getName());
         user.setEmail(userModel.getEmail());
-        user.setPassword(userModel.getPassword());
+        user.setPassword(passwordEncoder.encode(userModel.getPassword()));
         user.setPhoneNumber(userModel.getPhoneNumber());
 
         user.setDp(cloudinaryService.uploadToCloudinary(assetProvider.getDpFile(), userModel.getName(), "profile", "default_dp"));
+
+        List<String> rolesList = new ArrayList<String>();
+        rolesList = userModel.getRoles();
+        Set<Roles> roles = new HashSet<>();
+        if(userModel.getRoles() != null){
+            for(String role : rolesList){
+                Roles r = new Roles();
+                r.setERole(ERole.valueOf(role));
+                mt.save(r);
+                roles.add(r);
+            }
+        }
+        else{
+            Roles r = new Roles();
+            r.setERole(ERole.valueOf("ROLE_USER"));
+            mt.save(r);
+            roles.add(r);
+        }
+        user.setRoles(roles); 
 
         Date currentDate = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
@@ -100,6 +129,14 @@ public class UserServiceImpl implements UserService {
         mt.save(user);
         logger.info(user.toString());
         return "Valid";
+    }
+
+    @Override
+    public String getUsernameByEmail(String email) throws IllegalArgumentException {
+        Query query = new Query().addCriteria(Criteria.where("email").is(email));
+        UserCollection user = mt.findOne(query, UserCollection.class);
+        if(user == null) throw new IllegalArgumentException("Can't find the username");
+        return user.getName();
     }
 
 }
