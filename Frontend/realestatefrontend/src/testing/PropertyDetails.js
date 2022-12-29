@@ -15,7 +15,8 @@ export default function PropertyDetails() {
         ':hover': {
           boxShadow: 10,
         },
-        borderRadius: '7px'
+        borderRadius: '7px',
+        display: 'flex'
     };
 
     const imageList = ['https://assets-news.housing.com/news/wp-content/uploads/2022/01/11171103/World%E2%80%99s-15-Most-Beautiful-Houses-That-Will-Leave-You-Awestruck-01.jpg',

@@ -17,6 +17,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import AddHomeRoundedIcon from "@mui/icons-material/AddHomeRounded";
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 // import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ["Products", "Pricing", "Blog"];
@@ -25,6 +27,10 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function Header() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  
+  const userLogin = useSelector((state) => state.userLogin)
+  const {userInfo} = userLogin
+  const dispatch = useDispatch();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -157,14 +163,11 @@ function Header() {
             </Button>
           </Box>
 
-          <Box justifyContent="flex-end" style={{ bgcolor: "white" }}>
-            <Button variant="contained">Login</Button>
-          </Box>
-
-          {/* <Box sx={{ flexGrow: 0 }}>
+          {userInfo && userInfo.username ? (
+            <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Dp" src={userInfo.dp} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -189,7 +192,17 @@ function Header() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box> */}
+          </Box> 
+          ) : (
+            <Box justifyContent="flex-end" style={{ bgcolor: "white" }}>
+            <Button variant="contained">
+              <Link to={'/login'} style={{ textDecoration: "none", color: "white" }}>
+                Login
+              </Link>
+            </Button>
+          </Box>
+          )}
+          
         </Toolbar>
       </Container>
     </AppBar>
