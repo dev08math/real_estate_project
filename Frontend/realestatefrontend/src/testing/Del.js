@@ -1,72 +1,132 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { CardHeader, Grid, Stack } from '@mui/material';
+import { Grid, Box, Typography, List, ListItem} from '@mui/material'
+import {Stack } from '@mui/system'
+import React from 'react'
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-const cardStyles = {
-  bgcolor: 'background.color',
-  border: 1,
-  // height: '5rem',
-  borderTop: 23,
-  // borderColor: 'error.main',
-  borderTopColor: 'error.main',
-  ':hover': {
-    boxShadow: 10,
-  },
-  borderRadius: '15px'
-};
+export default function PropertyDetails() {
+    const boxStyle = {
+        bgcolor: 'background.color',
+        border: 1,
+        borderTop: 20,
+        borderBottom: 16,
+        borderColor: 'error.main',
+        ':hover': {
+          boxShadow: 10,
+        },
+        borderRadius: '7px',
+        display: 'flex'
+    };
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+    const imageList = ['https://assets-news.housing.com/news/wp-content/uploads/2022/01/11171103/World%E2%80%99s-15-Most-Beautiful-Houses-That-Will-Leave-You-Awestruck-01.jpg',
+    'https://assets-news.housing.com/news/wp-content/uploads/2022/01/11171226/World%E2%80%99s-15-Most-Beautiful-Houses-That-Will-Leave-You-Awestruck-02.png',
+    'https://assets-news.housing.com/news/wp-content/uploads/2022/01/10150003/most-beautiful-houses1.png',
+    'https://assets-news.housing.com/news/wp-content/uploads/2022/01/11171313/World%E2%80%99s-15-Most-Beautiful-Houses-That-Will-Leave-You-Awestruck-03.jpg',
+    'https://assets-news.housing.com/news/wp-content/uploads/2022/01/11172632/World%E2%80%99s-15-Most-Beautiful-Houses-That-Will-Leave-You-Awestruck-04.jpg' ];
+    
+    const details = {
+        "Name" : "Mathew Prince",
+        "ID" : "15724X",
+        "feifhihihri" : "fehifheifej",
+        "ckjdkc" : "eicudhfvuiofhvfeovheovhefovehnvjoefnv",
+        "Description" : "simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset shee"
+    }
 
-const card = (
-  <React.Fragment>
-    {/* <CardHeader sx={{ backgroundColor : 'red'}}></CardHeader> */}
-    <CardContent>
-      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-        Word of the Day
-      </Typography>
-      <Typography variant="h5" component="div">
-        be{bull}nev{bull}o{bull}lent
-      </Typography>
-      <Typography sx={{ mb: 1.5 }} color="text.secondary">
-        adjective
-      </Typography>
-      <Typography variant="body2">
-        well meaning and kindly.
-        <br />
-        {'"a benevolent smile"'}
-      </Typography>
-    </CardContent>
-    <CardActions>
-      <Button size="small">Learn More</Button>
-    </CardActions>
-  </React.Fragment>
-);
+    const settings = {
+        // dots: true,
+        // infinite: true,
+        // speed: 500,
+        // centerMode: true,
+        // slidesToShow: 1,
+        // slidesToScroll: 1,
+        // centerMode: true,
+        // variableWidth: true,
+        // swipeToSlide: true,
+        // edgeFriction: 0.15,
+        // autoplay: true,
+        // autoplaySpeed: 200,
+        // cssEase: "linear"
 
-export default function OutlinedCard() {
+        // dots: true,
+        // infinite: true,
+        // slidesToShow: 1,
+        // slidesToScroll: 1,
+        // autoplay: true,
+        // autoplaySpeed: 300,
+
+        // className: "center",
+        // centerMode: true,
+        // infinite: true,
+        // centerPadding: "60px",
+        // slidesToShow: 3,
+        // speed: 500
+
+        // infinite: true,
+        // dots: true,
+        // slidesToShow: 1,
+        // arrows: true,
+        // slidesToScroll: 1,
+        // lazyLoad: true
+    };
+
   return (
-    <Grid container>
-      <Grid item xs={2}></Grid>
-      <Grid item xs={6}>
-        <Stack spacing={3}>
-          <Box />
+    // <Stack spacing={2}>
+    //     <Box>Add the nav links for the deatils card</Box>
+    //     <Grid container spacing={2}>
+    //         <Grid item>
+          
+    //                 <Box sx={{...boxStyle, padding:'20px'}}>
+                      
+    //                         {/* <Box /> */}
+    //                         <Box>
+    //                         <Slider {...settings}>
+    //                             {imageList.map((image, index) => {
+    //                                 {console.log(image)}
+    //                                 return (<Box
+    //                                 component="img"
+    //                                 key={index}
+    //                                 sx={{
+    //                                 maxHeight: { xs: 233, md: 167 },
+    //                                 maxWidth: { xs: 350, md: 250 },
+    //                                 borderRadius: '7px'
+    //                                 }}
+    //                                 alt="The house from the offer."
+    //                                 src={image}/>)
+    //                             })}
+    //                         </Slider>
+    //                         </Box>
+                            
+    //                         {/* <Box /> */}
+                     
+    //                 </Box>
+                    
+    //         </Grid>
+    //     </Grid> 
+    // </Stack>
 
-          <Card variant="outlined" sx={{...cardStyles, padding:'20px'}}>{card}</Card>
-          <Card variant="outlined" sx={{...cardStyles, padding:'20px'}}>{card}</Card>
-          <Card variant="outlined" sx={{...cardStyles, padding:'20px'}}>{card}</Card>
-        </Stack>
-      </Grid>
-      </Grid>
-  );
+    <div>
+    <Slider {...settings}>
+      {imageList.map((item) => (
+        <div key={item}>
+          <img src={item}  alt='ytyt' />
+        </div>
+      ))}
+    </Slider>
+  </div>
+//   <div className="App">
+//   test
+//   <Slider {...settings}>
+//     <Box>
+//       <h3>1</h3>
+//     </Box>
+//     <div>
+//       <h3>2</h3>
+//     </div>
+//     <div>
+//       <h3>3</h3>
+//     </div>
+//   </Slider>
+// </div>
+  )
 }

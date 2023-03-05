@@ -1,7 +1,0 @@
-package com.backend.realestatebackend.models;
-
-public enum ERole {
-    ROLE_USER,
-    ROLE_MODERATOR,
-    ROLE_ADMIN
-}

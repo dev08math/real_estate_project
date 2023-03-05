@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import {
   AppBar,
   Box,
@@ -10,16 +10,14 @@ import {
   Button,
   Tooltip,
   MenuItem,
-  Stack,
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import AddHomeRoundedIcon from "@mui/icons-material/AddHomeRounded";
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -27,6 +25,19 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function Header() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [bgStyle, setbgStyle] = useState({'textColor':{}, 'bgColor':{}});
+  const location = useLocation();
+
+  useEffect(() => {
+    if(location.pathname === '/'){
+      setbgStyle({
+        'textColor':{color: 'crimson'},
+        'bgColor':{background: 'transparent'}})}
+    else{
+      setbgStyle({
+      'textColor':{color: 'white'},
+      'bgColor':{background: 'crimson'}})}
+  }, [location]);
   
   const userLogin = useSelector((state) => state.userLogin)
   const {userInfo} = userLogin
@@ -48,10 +59,10 @@ function Header() {
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "crimson" }}>
+    <AppBar position="static" style={{...bgStyle.bgColor}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-            <HolidayVillageIcon sx={{ fontSize: 40, display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <HolidayVillageIcon sx={{ fontSize: 40, display: { xs: 'none', md: 'flex' }, mr: 1, ...bgStyle.textColor }} />
           <Typography
             variant="h6"
             noWrap
@@ -63,9 +74,9 @@ function Header() {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
               textDecoration: 'none',
-              fontSize: 40
+              fontSize: 40,
+              ...bgStyle.textColor 
             }}
           >
             iEstator
@@ -107,47 +118,13 @@ function Header() {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography> */}
-
-          <Box
-            justifyContent="flex-end"
-          
-            sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
-          >
-            <Stack direction="row" spacing={2}>
-              <Button variant="contained" color="warning">
-                Listings
-              </Button>
-              <Button variant="contained" color="warning">
-                Agencies
-              </Button>
-            </Stack>
-          </Box>
 
           <Box
             justifyContent="flex-end"
             p={2}
             sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
           >
-            <Button variant="contained" color="success">
+            <Button variant="contained" sx={{backgroundColor: 'transparent'}} >
               <AddHomeIcon />
               New Property
             </Button>
@@ -195,7 +172,7 @@ function Header() {
           </Box> 
           ) : (
             <Box justifyContent="flex-end" style={{ bgcolor: "white" }}>
-            <Button variant="contained">
+            <Button variant="contained" sx={{backgroundColor: 'transparent'}} >
               <Link to={'/login'} style={{ textDecoration: "none", color: "white" }}>
                 Login
               </Link>
