@@ -1,6 +1,8 @@
 package com.backendservice.controller;
 
-import com.backendservice.dto.PropertyRegistrationRequest;
+import com.backendservice.dto.PropertyDetails;
+import com.backendservice.models.MatchingParameters;
+import com.backendservice.models.PropertiesCollection;
 import com.backendservice.services.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +26,15 @@ public class PropertiesController {
 
     @PostMapping(value = { "/addNewProperty" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
                                                              MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> addProperty(@RequestPart("propertyData") PropertyRegistrationRequest propertyRegistrationRequest,
+    public ResponseEntity<?> addProperty(@RequestPart("propertyData") PropertyDetails propertyDetails,
                                          @RequestPart("imageData") MultipartFile[] files){
         if (files.length > 0) {
             List<MultipartFile> images = new ArrayList<MultipartFile>(Arrays.asList(files));
-            propertyRegistrationRequest.setImages(images);
+            propertyDetails.setImages(images);
         }
         String result;
         try {
-            result = propertiesService.addNewProperty(propertyRegistrationRequest);
+            result = propertiesService.addNewProperty(propertyDetails);
         }
         catch(Exception e){
             logger.error(e.toString());
@@ -41,5 +43,16 @@ public class PropertiesController {
                     .body(e.toString());
         }
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/fetchPropertyDetails")
+    public ResponseEntity<?> getPropertyDetails(@RequestBody MatchingParameters matchingParameters){
+        List<PropertiesCollection> propertiesCollections = propertiesService.getPropertyDetails(matchingParameters);
+        if(propertiesCollections.isEmpty()){
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("No properties found");
+        }
+        return ResponseEntity.ok(propertiesCollections);
     }
 }

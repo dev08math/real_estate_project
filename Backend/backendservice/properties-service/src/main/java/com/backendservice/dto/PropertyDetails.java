@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 @Data
 @NoArgsConstructor
-public class PropertyRegistrationRequest {
+public class PropertyDetails {
     private MainDetailsDTO mainDetails;
     private AmenitiesDetailsDTO amenitiesDetails;
     private RentalDetailsDTO rentalDetails;

@@ -1,11 +1,14 @@
 package com.backendservice.services;
 
 import com.backendservice.dto.OwnerDetailsResponse;
-import com.backendservice.dto.PropertyRegistrationRequest;
+import com.backendservice.dto.PropertyDetails;
+import com.backendservice.models.MatchingParameters;
 import com.backendservice.models.PropertiesCollection;
 import com.backendservice.utils.fields.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,11 +30,11 @@ public class PropertiesServiceImpl implements PropertiesService{
     private MongoTemplate mt;
 
     @Override
-    public String addNewProperty(PropertyRegistrationRequest propertyRegistrationRequest) {
+    public String addNewProperty(PropertyDetails propertyDetails) {
         WebClient webClient = WebClient.create("http://user-service");
         OwnerDetailsResponse ownerDetailsResponse = webClient.get()
                 .uri(builder -> builder.path("/api/user/userDetailsByID").
-                        queryParam("userID", propertyRegistrationRequest.getUserID()).build())
+                        queryParam("userID", propertyDetails.getUserID()).build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .onStatus(HttpStatus.NOT_FOUND::equals, clientResponse -> Mono.empty())
@@ -40,44 +43,44 @@ public class PropertiesServiceImpl implements PropertiesService{
 
         if(ownerDetailsResponse == null)
             throw new IllegalArgumentException("User Not Found with the ID " +
-                    propertyRegistrationRequest.getUserID());
+                    propertyDetails.getUserID());
 
         PropertiesCollection propertiesCollection = new PropertiesCollection();
 
         MainDetails mainDetails = new MainDetails();
-        mainDetails.setArea(propertyRegistrationRequest.getMainDetails().getArea());
-        mainDetails.setDescription(propertyRegistrationRequest.getMainDetails().getDescription());
-        mainDetails.setFloor(propertyRegistrationRequest.getMainDetails().getFloor());
-        mainDetails.setPropertyAge(propertyRegistrationRequest.getMainDetails().getPropertyAge());
-        mainDetails.setRoomType(propertyRegistrationRequest.getMainDetails().getRoomType());
-        mainDetails.setTotalFloors(propertyRegistrationRequest.getMainDetails().getTotalFloors());
-        mainDetails.setType(propertyRegistrationRequest.getMainDetails().getType());
+        mainDetails.setArea(propertyDetails.getMainDetails().getArea());
+        mainDetails.setDescription(propertyDetails.getMainDetails().getDescription());
+        mainDetails.setFloor(propertyDetails.getMainDetails().getFloor());
+        mainDetails.setPropertyAge(propertyDetails.getMainDetails().getPropertyAge());
+        mainDetails.setRoomType(propertyDetails.getMainDetails().getRoomType());
+        mainDetails.setTotalFloors(propertyDetails.getMainDetails().getTotalFloors());
+        mainDetails.setType(propertyDetails.getMainDetails().getType());
         propertiesCollection.setMainDetails(mainDetails);
 
         LocalityDetails localityDetails = new LocalityDetails();
-        localityDetails.setCity(propertyRegistrationRequest.getLocalityDetails().getCity());
-        localityDetails.setLandmark(propertyRegistrationRequest.getLocalityDetails().getLandmark());
-        localityDetails.setLocality(propertyRegistrationRequest.getLocalityDetails().getLocality());
-        localityDetails.setLocation(propertyRegistrationRequest.getLocalityDetails().getLocation());
-        localityDetails.setPincode(propertyRegistrationRequest.getLocalityDetails().getPincode());
+        localityDetails.setCity(propertyDetails.getLocalityDetails().getCity());
+        localityDetails.setLandmark(propertyDetails.getLocalityDetails().getLandmark());
+        localityDetails.setLocality(propertyDetails.getLocalityDetails().getLocality());
+        localityDetails.setLocation(propertyDetails.getLocalityDetails().getLocation());
+        localityDetails.setPincode(propertyDetails.getLocalityDetails().getPincode());
         propertiesCollection.setLocalityDetails(localityDetails);
 
         RentalDetails rentalDetails = new RentalDetails();
-        rentalDetails.setAvailability(propertyRegistrationRequest.getRentalDetails().getAvailability());
-        rentalDetails.setAvailableFrom(propertyRegistrationRequest.getRentalDetails().getAvailableFrom());
-        rentalDetails.setDeposit(propertyRegistrationRequest.getRentalDetails().getDeposit());
-        rentalDetails.setFurnishing(propertyRegistrationRequest.getRentalDetails().getFurnishing());
-        rentalDetails.setNegotiable(propertyRegistrationRequest.getRentalDetails().getNegotiable());
-        rentalDetails.setParking(propertyRegistrationRequest.getRentalDetails().getParking());
-        rentalDetails.setRent(propertyRegistrationRequest.getRentalDetails().getRent());
+        rentalDetails.setAvailability(propertyDetails.getRentalDetails().getAvailability());
+        rentalDetails.setAvailableFrom(propertyDetails.getRentalDetails().getAvailableFrom());
+        rentalDetails.setDeposit(propertyDetails.getRentalDetails().getDeposit());
+        rentalDetails.setFurnishing(propertyDetails.getRentalDetails().getFurnishing());
+        rentalDetails.setNegotiable(propertyDetails.getRentalDetails().getNegotiable());
+        rentalDetails.setParking(propertyDetails.getRentalDetails().getParking());
+        rentalDetails.setRent(propertyDetails.getRentalDetails().getRent());
         propertiesCollection.setRentalDetails(rentalDetails);
 
         AmenitiesDetails amenitiesDetails = new AmenitiesDetails();
-        amenitiesDetails.setAmenities(propertyRegistrationRequest.getAmenitiesDetails().getAmenities());
-        amenitiesDetails.setBalcony(propertyRegistrationRequest.getAmenitiesDetails().getBalcony());
-        amenitiesDetails.setBathrooms(propertyRegistrationRequest.getAmenitiesDetails().getBathrooms());
-        amenitiesDetails.setGym(propertyRegistrationRequest.getAmenitiesDetails().getGym());
-        amenitiesDetails.setSecurity(propertyRegistrationRequest.getAmenitiesDetails().getGym());
+        amenitiesDetails.setAmenities(propertyDetails.getAmenitiesDetails().getAmenities());
+        amenitiesDetails.setBalcony(propertyDetails.getAmenitiesDetails().getBalcony());
+        amenitiesDetails.setBathrooms(propertyDetails.getAmenitiesDetails().getBathrooms());
+        amenitiesDetails.setGym(propertyDetails.getAmenitiesDetails().getGym());
+        amenitiesDetails.setSecurity(propertyDetails.getAmenitiesDetails().getGym());
 
         QuickAccess quickAccess = new QuickAccess();
         quickAccess.setCity(propertiesCollection.getLocalityDetails().getCity());
@@ -87,12 +90,12 @@ public class PropertiesServiceImpl implements PropertiesService{
         quickAccess.setRoomType(propertiesCollection.getMainDetails().getRoomType());
         propertiesCollection.setQuickAccess(quickAccess);
 
-        List<MultipartFile> images = propertyRegistrationRequest.getImages();
-        List<String> propertyImages = new ArrayList<String>();
+        List<MultipartFile> images = propertyDetails.getImages();
+        List<String> propertyImages = new ArrayList<>();
         if(images.size()>0){
             for(int i=0; i<images.size(); i++){
                 propertyImages.add(cloudinaryService
-                        .uploadToCloudinary(images.get(i), propertyRegistrationRequest.getUserName(),
+                        .uploadToCloudinary(images.get(i), propertyDetails.getUserName(),
                                   "properties", images.get(i).getOriginalFilename() + i));
             }
             propertiesCollection.setHasPhotos(true);
@@ -104,7 +107,7 @@ public class PropertiesServiceImpl implements PropertiesService{
             propertiesCollection.setHasPhotos(false);
         }
         propertiesCollection.setImageLinks(propertyImages);
-        propertiesCollection.setOwnerId(propertyRegistrationRequest.getUserID());
+        propertiesCollection.setOwnerId(propertyDetails.getUserID());
         propertiesCollection.setTitle("Still have to think");
 
         Date currentDate = new Date();
@@ -113,6 +116,29 @@ public class PropertiesServiceImpl implements PropertiesService{
         propertiesCollection.setCreatedDate(postingDate);
 
         mt.save(propertiesCollection);
-        return "Success, added the property.";
+        return propertiesCollection.getPropId();
+    }
+
+    @Override
+    public List<PropertiesCollection> getPropertyDetails(MatchingParameters matchingParameters) {
+        List<PropertiesCollection> propertyDetails;
+        Query query = new Query().addCriteria(
+                Criteria.where("").orOperator(
+                    Criteria.where("ownerId").is(
+                            matchingParameters.getOwnerId() == null ? "" : matchingParameters.getOwnerId()),
+                    Criteria.where("propId").is(
+                            matchingParameters.getPropId() == null ? "" : matchingParameters.getPropId()),
+                    Criteria.where("localityDetails.city").is(
+                            matchingParameters.getCity() == null ? "" : matchingParameters.getCity()),
+                    Criteria.where("localityDetails.landmark").is(
+                            matchingParameters.getLandmark() == null ? "" : matchingParameters.getLandmark()),
+                    Criteria.where("localityDetails.locality").is(
+                            matchingParameters.getLocality()== null ? "" : matchingParameters.getLocality()),
+                    Criteria.where("localityDetails.pincode").is(
+                            matchingParameters.getPincode() == null ? -1 : matchingParameters.getPincode())
+                )
+        );
+        propertyDetails = mt.find(query, PropertiesCollection.class, "PropertiesCollection");
+        return propertyDetails;
     }
 }
