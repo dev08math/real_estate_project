@@ -1,9 +1,6 @@
 package com.backendservice.services;
 
-import com.backendservice.dto.ChatUserDetailsResponse;
-import com.backendservice.dto.OwnerDetailsResponse;
-import com.backendservice.dto.UserDetailsResponse;
-import com.backendservice.dto.UserRegistrationRequest;
+import com.backendservice.dto.*;
 import com.backendservice.models.TokenCollection;
 import com.backendservice.models.UserCollection;
 
@@ -18,4 +15,6 @@ public interface UserService {
     ChatUserDetailsResponse chatGetUserDetails(String name);
     UserDetailsResponse getUserDetailsByUsername(String userName);
     OwnerDetailsResponse getUserDetailsByID(String userID);
+    String addNewProperty(PropertyDetails propertyDetails);
+    UserCollection getUserByUserName(String userName);
 }

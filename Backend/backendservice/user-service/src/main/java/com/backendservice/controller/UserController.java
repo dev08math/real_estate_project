@@ -5,6 +5,11 @@ import com.backendservice.events.RegistrationEvent;
 import com.backendservice.models.TokenCollection;
 import com.backendservice.models.UserCollection;
 import com.backendservice.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +98,7 @@ public class UserController {
         return result;
     }
 
-    @PostMapping("/resendVerificationtoken")
+    @PostMapping("/resendVerificationToken")
     public String resendVerificationToken(@RequestParam("token") String token, final HttpServletRequest request) {
         TokenCollection tokenCollection = userService.generateNewToken(token);
         if (tokenCollection == null)
@@ -105,5 +110,42 @@ public class UserController {
     @GetMapping("/getChatUserDetails")
     public ChatUserDetailsResponse getUserDetailsForChat(@RequestParam("userName") String name){
         return userService.chatGetUserDetails(name);
+    }
+
+    @PostMapping("/addNewProperty")
+    public ResponseEntity<?> addNewProperty(@RequestBody PropertyDetails propertyDetails){
+        String result;
+        try{
+            result = userService.addNewProperty(propertyDetails);
+        }
+        catch(Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Error in adding new property");
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    private UserCollection applyPatchToUser(
+            JsonPatch patch, UserCollection targetUser) throws JsonPatchException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetUser, JsonNode.class));
+        return objectMapper.treeToValue(patched, UserCollection.class);
+    }
+    @PatchMapping("/updateUserDetails")
+    public ResponseEntity<?> updateDetails(@RequestBody JsonPatch patch, @RequestParam("userName") String userName){
+        try{
+            UserCollection user = userService.getUserByUserName(userName);
+            UserCollection updatedUser = applyPatchToUser(patch, user);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            logger.info(String.format("Error in patching the details for %s", userName));
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(String.format("Error in updating user %s", userName));
+        }
+        catch (IllegalArgumentException e){
+            logger.info(String.format("Unable to update details for %s", userName));
+        }
+        return ResponseEntity.ok(String.format("Successfully updated the user having userName -> %s", userName));
     }
 }

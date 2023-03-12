@@ -13,4 +13,5 @@ public class UserDetailsResponse {
     private String id;
     private String displayLink;
     private List<String> authorities;
+    private List<String> myProperties;
 }

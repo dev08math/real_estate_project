@@ -1,9 +1,6 @@
 package com.backendservice.services;
 
-import com.backendservice.dto.ChatUserDetailsResponse;
-import com.backendservice.dto.OwnerDetailsResponse;
-import com.backendservice.dto.UserDetailsResponse;
-import com.backendservice.dto.UserRegistrationRequest;
+import com.backendservice.dto.*;
 import com.backendservice.models.Roles;
 import com.backendservice.models.TokenCollection;
 import com.backendservice.models.UserCollection;
@@ -93,13 +90,17 @@ public class UserServiceImpl implements UserService {
         FindAndModifyOptions findAndModifyOptions = new FindAndModifyOptions();
         findAndModifyOptions.returnNew(true).upsert(false);
 
-        return mt.findAndModify(query, updateDefinition, findAndModifyOptions, TokenCollection.class);
+        return mt.findAndModify(query,
+                updateDefinition,
+                findAndModifyOptions,
+                TokenCollection.class,
+                "TokenCollection");
     }
 
     @Override
     public String validateVerificationToken(String token) {
         Query query = new Query().addCriteria(Criteria.where("verificationToken.token").is(token));
-        TokenCollection tokenObj = mt.findOne(query, TokenCollection.class);
+        TokenCollection tokenObj = mt.findOne(query, TokenCollection.class,"TokenCollection");
         if (tokenObj == null)
             return "Invalid";
 
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
             return "Expired";
         }
 
-        UserCollection user = mt.findById(tokenObj.getUserId(), UserCollection.class);
+        UserCollection user = mt.findById(tokenObj.getUserId(), UserCollection.class, "UserCollection");
         if (user == null)
             return "Cannot find the user";
         user.setEnabled(true);
@@ -121,14 +122,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUsernameByEmail(String email) throws IllegalArgumentException {
         Query query = new Query().addCriteria(Criteria.where("email").is(email));
-        UserCollection user = mt.findOne(query, UserCollection.class);
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
         if(user == null) throw new IllegalArgumentException("Can't find the username");
         return user.getUserName();
     }
     @Override
     public ChatUserDetailsResponse chatGetUserDetails(String userName) throws IllegalArgumentException {
         Query query = new Query().addCriteria(Criteria.where("userName").is(userName));
-        UserCollection user = mt.findOne(query, UserCollection.class);
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
         ChatUserDetailsResponse chatUserDetailsResponse = new ChatUserDetailsResponse();
         if(user == null) throw new IllegalArgumentException("Can't find the username");
         chatUserDetailsResponse.setDisplayLink(user.getDisplayLink());
@@ -139,7 +140,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailsResponse getUserDetailsByUsername(String userName) throws IllegalArgumentException {
         Query query = new Query().addCriteria(Criteria.where("userName").is(userName));
-        UserCollection user = mt.findOne(query, UserCollection.class);
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
         if(user == null) throw new IllegalArgumentException();
         userDetailsResponse.setId(user.getUserId());
@@ -147,6 +148,7 @@ public class UserServiceImpl implements UserService {
         userDetailsResponse.setUserName(userName);
         userDetailsResponse.setPassword(user.getPassword());
         userDetailsResponse.setEmail(user.getEmail());
+        userDetailsResponse.setMyProperties(user.getMyProperties());
         List<String> roles = user.getRoles().stream().map(role -> role.getERole().toString()).toList();
         userDetailsResponse.setAuthorities(roles);
         return userDetailsResponse;
@@ -155,13 +157,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public OwnerDetailsResponse getUserDetailsByID(String userID) {
         Query query = new Query().addCriteria(Criteria.where("userId").is(userID));
-        UserCollection user = mt.findOne(query, UserCollection.class);
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
         if(user == null) throw new IllegalArgumentException();
         OwnerDetailsResponse ownerDetailsResponse = new OwnerDetailsResponse();
         ownerDetailsResponse.setOwnerEmail(user.getEmail());
         ownerDetailsResponse.setOwnerName(user.getUserName());
         ownerDetailsResponse.setOwnerPhoneNumber(user.getPhoneNumber().toString());
         return ownerDetailsResponse;
+    }
+
+    @Override
+    public String addNewProperty(PropertyDetails propertyDetails) {
+        Query query = new Query().addCriteria(Criteria.where("userId").is(propertyDetails.getUserId()));
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
+        if(user == null) throw new IllegalArgumentException();
+        List<String> propertyList = user.getMyProperties();
+        propertyList.add(propertyDetails.getPropId());
+        user.setMyProperties(propertyList);
+        return "Success";
+    }
+
+    @Override
+    public UserCollection getUserByUserName(String userName) {
+        Query query = new Query().addCriteria(Criteria.where("userName").is(userName));
+        UserCollection user = mt.findOne(query, UserCollection.class, "UserCollection");
+        if(user == null) throw new IllegalArgumentException();
+        return user;
     }
 
 }

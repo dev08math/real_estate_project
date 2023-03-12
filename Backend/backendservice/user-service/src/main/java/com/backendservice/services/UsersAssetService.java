@@ -17,7 +17,6 @@ public class UsersAssetService {
         default_dp = new ClassPathResource("assets/default_dp.png");
 
         InputStream dp_stream;
-        InputStream prop_stream;
         try {
             dp_stream = default_dp.getInputStream();
         } catch (Exception  ex) {
