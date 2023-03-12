@@ -8,7 +8,6 @@ import com.backendservice.security.CustomUserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -159,6 +158,23 @@ public class OpenController {
                     .body("Unable to login to chat server");
         }
         return ResponseEntity.ok(usernamePasswordAuthenticationToken.toString());
+    }
+
+    @GetMapping("/user/verifyRegistration")
+    public String verifyUser(@RequestParam("token") String token) {
+
+        WebClient webClient = WebClient.create("http://user-service");
+        String response = webClient.get()
+                .uri(builder -> builder.path("/api/user/verifyRegistration").queryParam("token", token).build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .onStatus(HttpStatus.NOT_FOUND::equals, clientResponse -> Mono.empty())
+                .bodyToMono(String.class)
+                .block();
+
+        if(response == null)
+            throw new RuntimeException("Verification Service seems to be down.");
+        return response;
     }
 
 }
