@@ -10,6 +10,7 @@
 		<module>chat-service</module>
 		<module>api-gateway</module>
 		<module>auth-service</module>
+		<module>email-service</module>
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
