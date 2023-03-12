@@ -1,5 +1,4 @@
 package com.backendservice.services.ChatUsers;
-;
 
 import com.backendservice.dto.SentMessage;
 import com.backendservice.dto.UserDetailsResponse;

@@ -40,7 +40,7 @@ public class ChatUsersImpl implements ChatUsers {
         Query qs = new Query().addCriteria(Criteria.where("userName").is(sender)),
                 qr = new Query().addCriteria(Criteria.where("userName").is(receiver));
 
-        ChatsUsersCollection senderObj = mt.findOne(qs, ChatsUsersCollection.class);
+        ChatsUsersCollection senderObj = mt.findOne(qs, ChatsUsersCollection.class, "ChatsUsersCollection");
         if(senderObj == null) senderObj = addNewUser(sender);
 
         ChatsUsersCollection receiverObj = mt.findOne(qr, ChatsUsersCollection.class);
@@ -60,7 +60,7 @@ public class ChatUsersImpl implements ChatUsers {
     @Override
     public List<UserDetailsResponse> getContactDetails(String userName) {
         Query query = new Query().addCriteria(Criteria.where("userName").is(userName));
-        ChatsUsersCollection user = mt.findOne(query, ChatsUsersCollection.class);
+        ChatsUsersCollection user = mt.findOne(query, ChatsUsersCollection.class, "ChatsUsersCollection");
         if(user == null) throw new IllegalArgumentException(
                 String.format("Can't find the %s's name in Chat's DB", userName));
         return user.getContacts().entrySet().stream()

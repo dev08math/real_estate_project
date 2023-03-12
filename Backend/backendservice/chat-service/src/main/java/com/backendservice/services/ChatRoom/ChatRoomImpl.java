@@ -54,7 +54,7 @@ public class ChatRoomImpl implements ChatRoom {
         List<MessagesResponse> messages = new ArrayList<>();
         Query query = new Query().addCriteria(Criteria.where("identifier").is(identifier))
                                  .limit(fetchRequest.getLimit());
-        List<ChatsCollection> chats = mt.find(query, ChatsCollection.class);
+        List<ChatsCollection> chats = mt.find(query, ChatsCollection.class, "ChatsCollection");
         for(ChatsCollection c : chats){
             messages.add(MessagesResponse.builder().content(c.getContent())
                                                    .senderName(c.getSenderName())
