@@ -2,7 +2,6 @@ package com.backendservice.controller;
 
 import com.backendservice.dto.PropertyDTOs.PropertyRegistrationRequest;
 import com.backendservice.dto.UserDTOs.OwnerDetailsResponse;
-import com.backendservice.dto.UserDTOs.UserDetailsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
