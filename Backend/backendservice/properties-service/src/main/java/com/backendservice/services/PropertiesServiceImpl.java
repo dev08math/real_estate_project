@@ -27,6 +27,8 @@ public class PropertiesServiceImpl implements PropertiesService{
     @Autowired
     private PropertiesAssetService propertiesAssetService;
     @Autowired
+    private NodeService nodeService;
+    @Autowired
     private MongoTemplate mt;
 
     @Override
@@ -115,6 +117,9 @@ public class PropertiesServiceImpl implements PropertiesService{
         String postingDate = formatter.format(currentDate);
         propertiesCollection.setCreatedDate(postingDate);
 
+        nodeService.insert(String.format("%s, %s, %s", propertyDetails.getLocalityDetails().getLocation(),
+                                                              propertyDetails.getLocalityDetails().getLocality(),
+                                                              propertyDetails.getLocalityDetails().getCity()));
         mt.save(propertiesCollection);
         return propertiesCollection.getPropId();
     }

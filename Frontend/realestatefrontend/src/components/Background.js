@@ -8,10 +8,10 @@ export default function Background() {
       style={{ color: "white", background: "transparent", boxShadow: "none" }}
     >
       <div className="text">
-        <Typography variant="h2">
+        <Typography  variant="h2">
           Random Marketing Slogan. Find your desired 'whatever' in
         </Typography>
-        <Typography  variant="h2"color={"crimson"}>
+        <Typography display="inline" variant="h2"color={"crimson"}>
           <TypeWriter
             options={{
               strings: [

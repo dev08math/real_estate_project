@@ -4,15 +4,18 @@ import {
   Grid,
   InputAdornment,
   MenuItem,
-  MenuList,
   TextField,
   ThemeProvider,
   Typography,
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import CircularProgressWithLabel from "../components/CircularProgressWithLabel";
+import DetailsOptons from "../components/DetailsOptons";
+import { mainDetailsUpdate } from "../redux/features/propDetails/propDetailsSlice";
+import { Link } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -27,15 +30,21 @@ const theme = createTheme({
   },
 });
 
-export default function AddNewProperty() {
-  const [mainDetails, setmainDetails] = useState({
-    propertyType: "",
-    bhkType: "",
-    floor: "",
-    totalFloors: "",
-    age: "",
-    area: "",
-  });
+export default function MainDetails() {
+  const dispatch = useDispatch();
+  const propertyDetails = useSelector((state) => state.propDetails);
+  const [mainDetails, setmainDetails] = useState((propertyDetails) =>
+    propertyDetails.mainDetails === {}
+      ? {
+          propertyType: "",
+          bhkType: "",
+          floor: "",
+          totalFloors: "",
+          age: "",
+          area: "",
+        }
+      : propertyDetails.mainDetails
+  );
   const propertyTypes = ["Office", "Villa", "Apartment", "Gated Community"];
   const bhkTypes = ["1BHK", "2BHK", "3BHK", "4BHK", "4BHK+"];
   const ageTypes = [
@@ -46,7 +55,7 @@ export default function AddNewProperty() {
     "7 to 10 years",
     "Greater than 10 years",
   ];
-  const [progress, setprogress] = useState({ value: 27 });
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} />
@@ -57,7 +66,6 @@ export default function AddNewProperty() {
         <Stack direction="row" spacing={50}>
           <Box />
           <Typography variant="h5">Property Details</Typography>
-          <CircularProgressWithLabel {...progress} />
         </Stack>
       </Grid>
       <Grid item xs={2} />
@@ -65,41 +73,11 @@ export default function AddNewProperty() {
       <Grid item xs={2} />
       <Grid item xs={2}>
         <Box>
-          <ThemeProvider theme={theme}>
-            <MenuList spacing={1}>
-              <MenuItem disableRipple sx={{ "&:hover": { background: "none" } }}>
-                <Button
-                  variant="none"
-                  sx={{
-                    color: "background.main",
-                    borderLeft: 4,
-                    borderColor: "secondary.border",
-                  }}
-                >
-                  Property Details
-                </Button>
-              </MenuItem>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>
-                  Locality Details
-                </Button>
-              </MenuItem>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>
-                  Rental Details
-                </Button>
-              </MenuItem>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>Amenities</Button>
-              </MenuItem>
-            </MenuList>
-          </ThemeProvider>
+          <DetailsOptons Option={"Property Details"} />
         </Box>
       </Grid>
       <Grid item xs>
         <ThemeProvider theme={theme}>
-          {console.log(mainDetails)}
-
           <Stack spacing={2}>
             <Box />
 
@@ -120,6 +98,7 @@ export default function AddNewProperty() {
             <TextField
               id="property-type"
               select
+              required
               label="Property Type"
               value={mainDetails.propertyType}
               onChange={(event) => {
@@ -128,7 +107,7 @@ export default function AddNewProperty() {
                   propertyType: event.target.value,
                 }));
               }}
-              style={{width:250 }}
+              style={{ width: 250 }}
               size="small"
             >
               {propertyTypes.map((type, index) => (
@@ -143,6 +122,7 @@ export default function AddNewProperty() {
                 id="bhk-type"
                 select
                 label="BHK"
+                required
                 value={mainDetails.bhkType}
                 onChange={(event) => {
                   setmainDetails((prevState) => ({
@@ -164,6 +144,7 @@ export default function AddNewProperty() {
                 <TextField
                   id="floor"
                   label="Floor"
+                  required
                   value={mainDetails.floor}
                   onChange={(event) => {
                     setmainDetails((prevState) => ({
@@ -178,6 +159,7 @@ export default function AddNewProperty() {
                 <TextField
                   id="total-Floors"
                   label="Total Floors"
+                  required
                   value={mainDetails.totalFloors}
                   onChange={(event) => {
                     setmainDetails((prevState) => ({
@@ -196,6 +178,7 @@ export default function AddNewProperty() {
                 id="age"
                 select
                 label="Age"
+                required
                 value={mainDetails.age}
                 onChange={(event) => {
                   setmainDetails((prevState) => ({
@@ -216,6 +199,7 @@ export default function AddNewProperty() {
               <TextField
                 id="area"
                 label="Built Up Area"
+                required
                 value={mainDetails.area}
                 onChange={(event) => {
                   setmainDetails((prevState) => ({
@@ -234,21 +218,20 @@ export default function AddNewProperty() {
             </Stack>
 
             <Box display="flex" justifyContent="end" alignItems="center">
-              <Button
-                color="warning"
-                variant="contained"
-                style={{ textTransform: "none" }}
-              >
-                Back
-              </Button>
-              <Button
-                color="success"
-                variant="contained"
-                style={{ textTransform: "none" }}
-                sx={{ bgcolor: "secondary.save", m:3 }}
-              >
-                Save and Continue
-              </Button>
+              <Link to={"/localityDetails"}>
+                <Button
+                  color="success"
+                  variant="contained"
+                  type="submit"
+                  onSubmit={() => {
+                    dispatch(mainDetailsUpdate(mainDetails));
+                  }}
+                  style={{ textTransform: "none" }}
+                  sx={{ bgcolor: "secondary.save", m: 3 }}
+                >
+                  Save and Continue
+                </Button>
+              </Link>
             </Box>
           </Stack>
         </ThemeProvider>

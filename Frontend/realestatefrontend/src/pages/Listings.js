@@ -1,14 +1,15 @@
 import { Grid, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Filter from "../components/Filter";
 import ListCell from "../components/ListCell";
 import SearchBar from "../components/SearchBar";
 import SortCom from "../components/SortCom";
-import SearchbarTest from "../testing/SearchbarTest";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingScreen from "../components/LoadingScreen";
+import AdvertComponent from "../components/AdvertComponent";
 
 export default function Listings() {
-  // filter states
   const [propertyFilter, setpropertyFilter] = useState([]);
   const [bhkFilter, setbhkFilter] = useState({});
   const [rentFilter, setrentFilter] = useState([]);
@@ -18,14 +19,74 @@ export default function Listings() {
   const [furnishingFilter, setfurnishingFilter] = useState("");
   const [photosFilter, setphotosFilter] = useState(false);
 
-  const [propList, setpropList] = useState([]);
+  const dispatch = useDispatch();
+  const proplist = useSelector((state) => state.proplist);
+  const { error, loading, proplistData } = proplist;
+  const [properties, setProperties] = useState(proplistData);
 
-  const boxStyle = {
-    bgcolor: "crimson",
-    borderRadius: "7px",
-  };
+  useEffect(() => {
+    if (proplistData) setProperties(proplistData);
+  }, [proplistData]);
 
-  console.log("Proplist ", propList);
+  useEffect(() => {
+    setProperties((prevState) => {
+      return prevState.filter((property) => {
+        if (
+          property.mainDetails.type === undefined ||
+          (propertyFilter[0] !== "" &&
+            propertyFilter.indexOf(property.mainDetails.type) === -1)
+        )
+          return false;
+        if (
+          property.mainDetails.roomType === undefined ||
+          (bhkFilter[0] !== "" &&
+            bhkFilter.indexOf(property.mainDetails.roomType) === -1)
+        )
+          return false;
+        if (
+          property.rentalDetails.rent === undefined ||
+          property.rentalDetails.rent < rentFilter[0] * 1000 ||
+          property.rentalDetails.ren > rentFilter[1] * 1000
+        )
+          return false;
+        if (
+          property.mainDetails.propertyAge === undefined ||
+          (ageFilter[0] !== "" &&
+            ageFilter.indexOf(property.mainDetails.propertyAge) === -1)
+        )
+          return false;
+        if (
+          property.rentalDetails.furnishing === undefined ||
+          (furnishingFilter[0] !== "" &&
+            furnishingFilter.indexOf(property.rentalDetails.furnishing) === -1)
+        )
+          return false;
+        if (
+          property.rentalDetails.availability === undefined ||
+          (availabilityFilter[0] !== "" &&
+            availabilityFilter.indexOf(property.rentalDetails.availability) ===
+              -1)
+        )
+          return false;
+        if (
+          property.images === undefined ||
+          (photosFilter && property.images.length < 2)
+        )
+          return false;
+        return true;
+      });
+    });
+  }, [
+    propertyFilter,
+    bhkFilter,
+    rentFilter,
+    availabilityFilter,
+    floorsFilter,
+    ageFilter,
+    furnishingFilter,
+    photosFilter,
+  ]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
@@ -51,7 +112,7 @@ export default function Listings() {
               display: "inline-block",
             }}
           >
-            <SearchBar propList={propList} setpropList={setpropList} />
+            <SearchBar />
           </Box>
         </Box>
       </Grid>
@@ -65,6 +126,8 @@ export default function Listings() {
             setfurnishingFilter,
             setageFilter,
             setphotosFilter,
+            setavailabilityFilter,
+            setfloorsFilter,
           ]}
         />
       </Grid>
@@ -75,8 +138,8 @@ export default function Listings() {
             sx={{ bgcolor: "crimson", height: "80px", borderRadius: "10px" }}
           >
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Typography sx={{color:'white', textTransform: "none" }}>
-                Showing {propList.length} results
+              <Typography sx={{ color: "white", textTransform: "none" }}>
+                Showing {properties.length} results
               </Typography>
             </Box>
             <Box
@@ -86,21 +149,37 @@ export default function Listings() {
                 marginRight: 7,
               }}
             >
-              <SortCom propList={propList} setpropList={setpropList} />
+              <SortCom proplist={properties} setProperties={setProperties} />
             </Box>
           </Box>
-          {/* <Box sx={{ bgcolor: "blue", ":hover": { boxShadow: 15 } }}> wo</Box> */}
-          <Stack spacing={5}  style={{maxHeight:'500px', overflow:'auto'}}>
-            <ListCell />
-            <ListCell />
-            <ListCell />
-          </Stack>
-        
+          {loading && <LoadingScreen message="Finding properties.." />}
+          <Box
+            sx={{
+              mb: 2,
+              display: "flex",
+              flexDirection: "column",
+              maxHeight: "700px",
+              overflow: "hidden",
+              overflowY: "scroll",
+            }}
+          >
+            <>
+              {(() => {
+                const arr = [];
+                for (let i = 0; i < properties.length; i++) {
+                  arr.push(<ListCell propData={properties[i]} />);
+                }
+                return arr;
+              })()}
+            </>
+          </Box>
         </Stack>
       </Grid>
 
       <Grid item xs={2}>
-        <Box sx={{ bgcolor: "orange" }}> lo</Box>
+        <Box sx={{ bgcolor: "orange" }}>
+          <AdvertComponent />
+        </Box>
       </Grid>
     </Grid>
   );

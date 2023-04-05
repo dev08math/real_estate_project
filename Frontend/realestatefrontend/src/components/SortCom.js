@@ -55,13 +55,13 @@ export default function SortCom(props) {
 
   const sortList = () => {
     if (draftAspect === "none") return;
-    const sorted = [...props.propList].sort((a, b) =>
+    const sorted = [...props.proplist].sort((a, b) =>
       draftDirection === "decrease"
         ? b[draftAspect] - a[draftAspect]
         : a[draftAspect] - b[draftAspect]
     );
     setOpen(false);
-    props.setpropList(sorted);
+    props.setProperties(sorted);
     setPrevAspect(draftAspect);
     setPrevDirection(draftDirection);
     setSortEnabled(true);

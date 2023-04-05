@@ -14,9 +14,9 @@ public class CloudinaryService {
 
     public CloudinaryService(){
         cloudinaryClient = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dpnpij6ca",
-                "api_key", "789215531587425",
-                "api_secret", "MW72OXs3Lv_kIqYYAN3jATp7KqU"));
+                "cloud_name", "------",
+                "api_key", "-----------",
+                "api_secret", "-----------"));
     }
     public String uploadToCloudinary(MultipartFile file, String userName, String folderName, String fileName){
         String result = "error";
@@ -24,7 +24,6 @@ public class CloudinaryService {
             result = (cloudinaryClient.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                     "public_id", "RealEstateApp/Users/" + userName + "/" + folderName + "/" + fileName,
                     "overwrite", true,
-                    // "notification_url", "https://mysite.com/notify_endpoint",
                     "resource_type", "auto"
             )).get("secure_url")).toString();
             logger.info(result);

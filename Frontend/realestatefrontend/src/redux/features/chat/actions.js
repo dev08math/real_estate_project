@@ -1,23 +1,30 @@
 import axios from "axios";
 import {
-  messagesPullPending,
-  messagesPullFufilled,
-  messagesPullRejected,
   contactsPullPending,
   contactsPullFufilled,
   contactsPullRejected,
+  updateActiveContact,
+  messagesPullFufilled,
+  messagesPullPending,
+  messagesPullRejected
 } from "./chatSlice";
 
-export const fetchContacts = (userName) => async (dispatch) => {
+export const fetchContacts = (userName) => async (dispatch, getState) => {
   dispatch(contactsPullPending());
-  // INPUT MESSAGE STATUS TOGGLING DISPATCHER, FIRST ALTER THE CONTACT STATE IN FRONTEND BEFORE DISPATCHING
 
   try {
+    
+    const {
+      searchResults: {searchResults},
+      userLogin: { userInfo },
+    } = getState();
+
     const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.access}`,
+        }
+    }
 
     const { data } = await axios.post(
       "/api/user/chat/getContactDetails",
@@ -32,25 +39,45 @@ export const fetchContacts = (userName) => async (dispatch) => {
   }
 };
 
-export const fetchDetails = () => async (dispatch, getState) => {
-  dispatch(detailsPending());
+
+export const setActiveContact= (contact) => async (dispatch) => {
+    dispatch(updateActiveContact(contact))
+    localStorage.setItem("activeContact", JSON.stringify(contact)) 
+};
+
+
+export const getMessages = (contactName, userName) => async (dispatch, getState) => {
+  dispatch(messagesPullPending());
 
   try {
+
+    const body = {
+        senderName: contactName,
+        receiverName: userName,
+        limit: 10
+    };
+  
     const {
-      userLogin: { userInfo },
-    } = getState();
+      searchResults: {searchResults},
+      userLogin: { userInfo }
+    } = getState()
 
     const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.access}`,
-      },
-    };
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.access}`,
+        }
+    }
 
-    const { data } = await axios.get("/api/user/details", config);
+    const { data } = await axios.post(
+      "/api/user/chat/getMessages",
+      config,
+      body
+    );
 
-    dispatch(detailsFufilled(data));
+    dispatch(messagesPullFufilled(data));
   } catch (error) {
     console.log(error);
+    dispatch(messagesPullRejected(error.response.data));
   }
 };

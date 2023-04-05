@@ -6,7 +6,6 @@ import {
   CssBaseline,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Box,
   Typography,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../redux/features/user/actions";
 import AlertBox from "../components/AlertBox";
@@ -102,12 +101,8 @@ export default function Login() {
               </Link>
             </Grid>
             <Grid item>
-              <Link
-                href="#"
-                variant="body2"
-                style={{ color: "#87CEEB", textDecoration: "none" }}
-              >
-                {"Don't have an account? Sign Up"}
+              <Link to={"/login"}>
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>

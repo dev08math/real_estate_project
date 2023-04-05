@@ -6,8 +6,6 @@ import {
   createTheme,
   Grid,
   InputAdornment,
-  MenuItem,
-  MenuList,
   Stack,
   TextField,
   ThemeProvider,
@@ -23,11 +21,14 @@ import CircularProgressWithLabel from "../components/CircularProgressWithLabel";
 import {
   MapContainer,
   Marker,
-  Popup,
   TileLayer,
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import DetailsOptons from "../components/DetailsOptons";
+import { useDispatch, useSelector } from "react-redux";
+import { localityDetailsUpdate } from "../redux/features/propDetails/propDetailsSlice";
+import { Link } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -51,7 +52,10 @@ const initialState = {
 };
 
 export default function LocalityDetails() {
-  const [localityDetails, setlocalityDetails] = useState(initialState);
+  const dispatch = useDispatch();
+  const propDetails  = useSelector((state) => state.propDetails);
+  const {propertyDetails} = propDetails;
+  const [localityDetails, setlocalityDetails] = useState((propertyDetails) => propertyDetails.localityDetails === {} ? initialState : propertyDetails.localityDetails);
   const cities = [
     "Pune",
     "Mumbai",
@@ -64,33 +68,15 @@ export default function LocalityDetails() {
     "Chennai",
     "Ahemdabad",
   ];
-  const [progress, setprogress] = useState({ value: 27 });
   const [marker, setMarker] = useState({ lat: "", lng: "" });
   const [showMarker, setshowMarker] = useState(false);
   const [search, setSearch] = useState("");
-  // 51.50, 'lng': -0.1});
 
-  const DisplayMarker = () => {
-    const map = useMap();
-    if (showMarker) {
-      map.flyTo(marker, 11);
-      return (
-        <Marker position={[marker.lat, marker.lng]}>
-          <Popup>
-            <span>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </span>
-          </Popup>
-        </Marker>
-      );
-    }
-  };
   const MapContent = () => {
     const map = useMapEvents({
       click: (e) => {
         setshowMarker(true);
         setMarker(e.latlng);
-        // DisplayMarker();
       },
     });
     return null;
@@ -100,6 +86,16 @@ export default function LocalityDetails() {
     const map = useMap();
     if (marker.lat === "" && marker.lng === "")
       map.setView([22.3511148, 78.6677428], 4);
+  };
+
+  const DisplayMarker = () => {
+    const map = useMap();
+    if (showMarker) {
+      map.flyTo(marker, 11);
+      return (
+        <Marker position={[marker.lat, marker.lng]} />
+      );
+    }
   };
 
   useEffect(() => {
@@ -131,7 +127,6 @@ export default function LocalityDetails() {
         <Stack direction="row" spacing={50}>
           <Box />
           <Typography variant="h5">Locality Details</Typography>
-          <CircularProgressWithLabel {...progress} />
         </Stack>
       </Grid>
       <Grid item xs={2} />
@@ -139,38 +134,7 @@ export default function LocalityDetails() {
       <Grid item xs={2} />
       <Grid item xs={2}>
         <Box>
-          <ThemeProvider theme={theme}>
-            <MenuList spacing={1}>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>
-                  Property Details
-                </Button>
-              </MenuItem>
-              <MenuItem
-                disableRipple
-                sx={{ "&:hover": { background: "none" } }}
-              >
-                <Button
-                  variant="none"
-                  sx={{
-                    color: "background.main",
-                    borderLeft: 4,
-                    borderColor: "secondary.border",
-                  }}
-                >
-                  Locality Details
-                </Button>
-              </MenuItem>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>
-                  Rental Details
-                </Button>
-              </MenuItem>
-              <MenuItem sx={{ "&:hover": { background: "none" } }}>
-                <Button sx={{ ":hover": { boxShadow: 10 } }}>Amenities</Button>
-              </MenuItem>
-            </MenuList>
-          </ThemeProvider>
+          <DetailsOptons Option={"Locality Details"} />
         </Box>
       </Grid>
       <Grid item xs>
@@ -278,21 +242,29 @@ export default function LocalityDetails() {
             </Stack>
 
             <Box display="flex" justifyContent="end" alignItems="center">
-              <Button
-                color="warning"
-                variant="contained"
-                style={{ textTransform: "none" }}
-              >
-                Back
-              </Button>
-              <Button
-                color="success"
-                variant="contained"
-                style={{ textTransform: "none" }}
-                sx={{ bgcolor: "secondary.save", m: 1 }}
-              >
-                Save and Continue
-              </Button>
+              <Link to={"/mainDetails"}>
+                <Button
+                  color="warning"
+                  variant="contained"
+                  style={{ textTransform: "none" }}
+                >
+                  Back
+                </Button>
+                </Link>
+              <Link to={"/rentalDetails"}>
+                <Button
+                  color="success"
+                  variant="contained"
+                  type="submit"
+                  onSubmit={() => {
+                    dispatch(localityDetailsUpdate(localityDetails));
+                  }}
+                  style={{ textTransform: "none" }}
+                  sx={{ bgcolor: "secondary.save", m: 1 }}
+                >
+                  Save and Continue
+                </Button>
+              </Link>
             </Box>
           </Stack>
 

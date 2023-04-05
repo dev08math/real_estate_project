@@ -2,21 +2,17 @@ import './App.css';
 import { CssBaseline } from '@mui/material';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import List from './pages/Listings';
-import SearchbarTest from './testing/SearchbarTest';
-import PropertyDetails from './testing/PropertyDetails';
-import Del from './testing/Del';
-import AddNewProperty from './testing/AddNewProperty';
-import LocalityDetails from './testing/LocalityDetails';
-import Login from './pages/Login';
-import HomePage from './pages/HomePage'
-import LoadingScreen from './components/LoadingScreen';
-import AlertBox from './components/AlertBox';
-
 import city from './assets/city.gif'
+import Test from './pages/Test';
+import HomePage from './pages/HomePage';
+import Login from './pages/Login';
+import Header from './components/Header';
 import Listings from './pages/Listings';
+import PropertyDetails from './pages/PropertyDetails';
+import LogOut from './pages/LogOut';
+import SignUp from './pages/SignUp';
+import MainDetails from './pages/MainDetails';
+
 
 
 function App() {
@@ -27,34 +23,22 @@ function App() {
     backgroundRepeat: 'no-repeat'
   } : {background:'transparent' } ;
   return (
-    //   <div style={{...bgStyle }}>
-    //   <CssBaseline />
-    //   <Header />
-    //   <main className='py-3'>
-    //     <Routes>
-    //       <Route exact path='/' element={<HomePage/>}/>
-    //       <Route exact path='/login' element={<Login/>}/>
-    //     </Routes>
-    //   </main>
-    // </div>
-
-    <>
-    <CssBaseline />
+      <div style={{...bgStyle }}>
+      <CssBaseline />
       <Header />
-      {/* <Listings /> */}
-      {/* <Searchbar /> */}
-      {/* <PropertyDetails /> */}
-      {/* <Del /> */}
-      {/* <AddNewProperty /> */}
-      {/* <LocalityDetails /> */}
-      {/* <Footer /> */}
-      {/* <Login /> */}
-      {/* <LoadingScreen /> */}
-      {/* <AlertBox /> */}
-      {/* <HomePage /> */}
-      <Listings />
-     
-    </>
+      <main className='py-3'>
+        <Routes>
+          <Route exact path='/' element={<HomePage/>}/>
+          <Route exact path='/signup' element={<SignUp />}/>
+          <Route exact path='/login' element={<Login/>}/>
+          <Route exact path='/logout' element={<LogOut />}/>
+          <Route exact path='/listings' element={<Listings />}/>
+          <Route exact path='/property/:id' element={<PropertyDetails />}/>
+          <Route exact path='/mainDetails' element={<MainDetails />}/>
+        </Routes>
+        {/* <Test /> */}
+      </main>
+    </div>   
   );
 }
 

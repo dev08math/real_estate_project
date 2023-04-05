@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
-import { Button } from "@mui/material";
-import ScrollToBottom from "react-scroll-to-bottom";
-import { useDispatch } from "react-redux";
-
-import { useRecoilValue, useRecoilState } from "recoil";
+import { Alert, Button } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 
 import "../styles/ChatBox.css";
-
-
+import { fetchContacts, getMessages, setActiveContact } from "../redux/features/chat/actions";
+import ScrollToBottom from "react-scroll-to-bottom";
+import LoadingScreen from "./LoadingScreen";
+import AlertBox from "./AlertBox";
+import SockJS from "sockjs-client";
+import { Client } from "stompjs";
 
 var stompClient = null;
 
@@ -16,13 +17,73 @@ export default function ChatBox() {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { error, loading, userInfo } = userLogin; // have to change the state names
+  const { error, loading, userInfo } = userLogin; 
+  const contactDetails = useSelector((state) => state.contacts);
+  const {contactsError, loadingContacts, contacts, activeContact} = contactDetails;
+  const messageData = useSelector((state) => state.messages);
+  const {messagesError, loadingMessages, messages} = messageData;
 
-  const currentUser = useRecoilValue(loggedInUser);
+  const currentUser = userInfo;
   const [text, setText] = useState("");
-  const [contacts, setContacts] = useState([]);
-  const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
-  const [messages, setMessages] = useRecoilState(chatMessages);
+  const [messageState, setMessages] = useState()
+
+  const onError = (err) => {
+    console.log(err);
+  };
+
+  
+  const connect = () => {
+    const socket = new SockJS("/ws");
+    stompClient = Client.over(socket);
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    console.log("connected");
+    console.log(currentUser);
+    stompClient.subscribe(
+      "/user/" + currentUser.userName + "/queue/messages",
+      onMessageReceived
+    );
+  };
+
+  const sendMessage = (msg) => {
+    if (msg.trim() !== "") {
+      const message = {
+        senderName: currentUser.name,
+        recipientName: activeContact.name,
+        content: msg,
+        timestamp: new Date(),
+      };
+      stompClient.send("/app/chat", {}, JSON.stringify(message));
+
+      const newMessages = [...messages];
+      newMessages.push(message);
+      setMessages(newMessages);
+    }
+  };
+
+  const onMessageReceived = (msg) => {
+    const notification = JSON.parse(msg.body);
+
+    if (activeContact.userName === notification.senderName) {
+      dispatch(getMessages(activeContact.userName, currentUser.userName));
+      setMessages((prevState) => {return { ...prevState, msg}})
+    } else {
+      <Alert severity="info">Received a new message from {notification.senderName}</Alert>
+    }
+    dispatch(fetchContacts(currentUser.userName))
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("userInfo") === null) {
+      // navigate to login
+    }
+    connect();
+    dispatch(fetchContacts(currentUser.userName))
+  }, []);
+
+
   return (
     <div id="frame">
       {error && <AlertBox message={error} />}
@@ -32,7 +93,7 @@ export default function ChatBox() {
           <div class="wrap">
             <img
               id="profile-img"
-              src={userInfo.dp}
+              src={userInfo.displayLink}
               class="online"
               alt=""
             />
@@ -57,22 +118,22 @@ export default function ChatBox() {
         </div>
         <div id="search" />
 
-        {/* <div id="contacts">
+        <div id="contacts">
           <ul>
             {contacts.map((contact) => (
               <li
-                onClick={() => setActiveContact(contact)}
+                onClick={dispatch(setActiveContact(contact.userName))}
                 class={
-                  activeContact && contact.id === activeContact.id
+                  activeContact && contact.userName === activeContact.userName
                     ? "contact active"
                     : "contact"
                 }
               >
                 <div class="wrap">
                   <span class="contact-status online"></span>
-                  <img id={contact.id} src={contact.profilePicture} alt="" />
+                  <img id={contact.userName} src={contact.displayLink} alt="" />
                   <div class="meta">
-                    <p class="name">{contact.name}</p>
+                    <p class="name">{contact.userName}</p>
                     {contact.newMessages !== undefined &&
                       contact.newMessages > 0 && (
                         <p class="preview">
@@ -84,34 +145,25 @@ export default function ChatBox() {
               </li>
             ))}
           </ul>
-        </div> */}
+        </div>
 
       </div>
 
       <div class="content">
         <div class="contact-profile">
-          {/* <img src={activeContact && activeContact.profilePicture} alt="" /> */}
-          
-          {/* placeholder */}
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzWhoN-LXL6cvf0Yf2LSE15lCO0_IhTeDSt4uaqh8d7c2u7eyal28H01wKxSwvROlTd3Y&usqp=CAU" alt="" />
-          
-          {/* <p>{activeContact && activeContact.name}</p> */}
-
-          {/* placeholder */}
-          <p>George</p>
-        </div>
-        {/* <ScrollToBottom className="messages">
+            <img src={activeContact && activeContact.displayLink} alt="" />
+            <p>{activeContact && activeContact.userName}</p>
+          </div>
+          <ScrollToBottom className="messages">
           <ul>
             {messages.map((msg) => (
-              <li class={msg.senderId === currentUser.id ? "sent" : "replies"}>
-                {msg.senderId !== currentUser.id && (
-                  <img src={activeContact.profilePicture} alt="" />
-                )}
+              <li class={msg.senderName === currentUser.userName ? "sent" : "replies"}>
+                  <img src={activeContact.displayLink} alt="" />
                 <p>{msg.content}</p>
               </li>
             ))}
           </ul>
-        </ScrollToBottom> */}
+        </ScrollToBottom>
         
         <div class="message-input">
           <div class="wrap">

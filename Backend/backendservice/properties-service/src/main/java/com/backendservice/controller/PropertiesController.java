@@ -3,6 +3,7 @@ package com.backendservice.controller;
 import com.backendservice.dto.PropertyDetails;
 import com.backendservice.models.MatchingParameters;
 import com.backendservice.models.PropertiesCollection;
+import com.backendservice.services.NodeService;
 import com.backendservice.services.PropertiesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public class PropertiesController {
     private final Logger logger = LoggerFactory.getLogger(PropertiesController.class);
     @Autowired
     private PropertiesService propertiesService;
+    @Autowired
+    private NodeService nodeService;
 
     @PostMapping(value = { "/addNewProperty" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
                                                              MediaType.APPLICATION_JSON_VALUE })
@@ -55,4 +58,15 @@ public class PropertiesController {
         }
         return ResponseEntity.ok(propertiesCollections);
     }
+
+    @GetMapping("/typeAhead")
+    public ResponseEntity<?> getSuggestions(@RequestParam("word") String word){
+        return ResponseEntity.ok(nodeService.suggest(word));
+    }
+
+    @PostMapping("/addNewSuggestion")
+    public void addNewSuggestion(@RequestParam("word") String word){
+        nodeService.insert(word);
+    }
+
 }

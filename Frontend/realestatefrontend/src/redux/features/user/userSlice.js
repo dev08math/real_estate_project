@@ -2,7 +2,9 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
     loading: false,
-    userInfo: {},
+    userInfo: localStorage.getItem("userInfo")
+    ? JSON.parse(localStorage.getItem("userInfo"))
+    : {},
     error: ''
   }
 
@@ -23,7 +25,12 @@ const userDetailsSlice = createSlice({
             state.loading = false
             state.userInfo = {}
             state.error = action.payload
-        }
+        },
+        logOutUser: (state) =>{
+            state.loading = false
+            state.userInfo = {}
+            state.error = ""
+        },
     }
 })
 
@@ -48,8 +55,31 @@ const userLoginSlice = createSlice({
     }
 })
 
+const userSignUplice = createSlice({
+    name: "userSignUp",
+    initialState,
+    reducers:{
+        signUpPending: state => {
+            state.loading = true;
+            state.error = '';
+        },
+        signUpFufilled: (state, action) => {
+            state.loading = false
+            state.userInfo = action.payload
+            state.error = ''
+        },
+        signUpRejected: (state, action) =>{
+            state.loading = false
+            state.userInfo = {}
+            state.error = action.payload
+        }
+    }
+})
+
 export const userDetailsReducer = userDetailsSlice.reducer;
 export const userLoginReducer = userLoginSlice.reducer;
+export const userSignUpReducer = userSignUplice.reducer;
 
-export const {detailsPending, detailsFufilled, detailsRejected } = userDetailsSlice.actions;
+export const {detailsPending, detailsFufilled, detailsRejected, logOutUser } = userDetailsSlice.actions;
 export const {loginPending, loginFufilled, loginRejected} = userLoginSlice.actions;
+export const {signUpPending, signUpFufilled, signUpRejected} = userSignUplice.actions;

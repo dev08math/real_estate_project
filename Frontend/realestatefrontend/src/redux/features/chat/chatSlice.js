@@ -9,6 +9,9 @@ const messagesInitialState = {
 const contactsInitialState = {
     loadingContacts: false,
     contacts: {},
+    activeContact: localStorage.getItem("activeContact")
+    ? JSON.parse(localStorage.getItem("activeContact"))
+    : {},
     contactsError: ''
   }
 
@@ -50,6 +53,9 @@ const contactsSlice = createSlice({
             state.loadingContacts = false
             state.contacts = {}
             state.contactsError = action.payload
+        },
+        updateActiveContact:(state, action) => {
+            state.activeContact = action.payload
         }
     }
 })
@@ -58,4 +64,4 @@ export const messagesReducer = messagesSlice.reducer;
 export const contactsReducer = contactsSlice.reducer;
 
 export const {messagesPullPending, messagesPullFufilled, messagesPullRejected } = messagesSlice.actions;
-export const {contactsPullPending, contactsPullFufilled, contactsPullRejected} = contactsSlice.actions;
+export const {contactsPullPending, contactsPullFufilled, contactsPullRejected, updateActiveContact} = contactsSlice.actions;

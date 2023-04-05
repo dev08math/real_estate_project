@@ -12,18 +12,18 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import AddHomeRoundedIcon from "@mui/icons-material/AddHomeRounded";
 import HolidayVillageIcon from '@mui/icons-material/HolidayVillage';
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = {
+  "Profile" : "/profile",
+  "Logout" :  "/logout"
+}
 
 function Header() {
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [bgStyle, setbgStyle] = useState({'textColor':{}, 'bgColor':{}});
   const location = useLocation();
@@ -43,15 +43,8 @@ function Header() {
   const {userInfo} = userLogin
   const dispatch = useDispatch();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -81,43 +74,6 @@ function Header() {
           >
             iEstator
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
 
           <Box
             justifyContent="flex-end"
@@ -163,11 +119,14 @@ function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {Object.entries(settings).map(entry =>{
+                return(
+                <MenuItem key={entry[0]} onClick={handleCloseUserMenu}>
+                  <Link to={entry[1]}>
+                    <Typography textAlign="center">{entry[0]}</Typography>
+                  </Link>
+                </MenuItem>)
+              })}
             </Menu>
           </Box> 
           ) : (
