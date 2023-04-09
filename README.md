@@ -2,8 +2,8 @@
 This ECOM APP is based on React.js and Django REST Framework utilizing PostgreSQL as relational database management system. It essentially encompases some basic functions of any ecommerce website.
 
 # Features
-1. Admin Login
-2. User creation and Profiling
+1. User Creation and Login
+2. 
 3. Robust Cart management 
 4. Order History
 5. Payment management with the help of Paypal's API 
@@ -15,8 +15,9 @@ This ECOM APP is based on React.js and Django REST Framework utilizing PostgreSQ
 
 # Built with 
 1. React.js
-2. Redux
-3. Django Rest Framework
-4. PostgreSQL
-5. React-Bootstrap
+2. Redux Toolkit
+3. Spring Boot Framework
+4. Mongo DB
+5. React Leaflet
 6. JWT
+7. Material UI
