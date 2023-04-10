@@ -1,17 +1,17 @@
-# ECOM_APP
-This ECOM APP is based on React.js and Django REST Framework utilizing PostgreSQL as relational database management system. It essentially encompases some basic functions of any ecommerce website.
+# REAL ESTATE APP
+
 
 # Features
 1. User Creation and Login
-2. 
-3. Robust Cart management 
-4. Order History
-5. Payment management with the help of Paypal's API 
-6. Shipping and Billing services
-7. Product Carousel in Homepage
-8. Product reviews and ratings
-9. Product search bar along with Pagination for easy navigation
-10. Checkout Process
+2. Property addition and listing
+3. Search bar for finding properties based on its location 
+4. Integrated Autocomplete in the search bar 
+5. Chat service for communicating with the respective owners within the app
+6. Embedded map for pointing the exact location of the property
+7. Service to notify users regarding any updates in the chat
+8. Filtering and sorting listed properties
+9. Property visibility management
+
 
 # Built with 
 1. React.js
@@ -19,5 +19,4 @@ This ECOM APP is based on React.js and Django REST Framework utilizing PostgreSQ
 3. Spring Boot Framework
 4. Mongo DB
 5. React Leaflet
-6. JWT
-7. Material UI
+6. Material UI
