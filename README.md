@@ -20,3 +20,5 @@
 4. Mongo DB
 5. React Leaflet
 6. Material UI
+7. Redis 
+
